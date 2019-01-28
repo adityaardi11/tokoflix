@@ -118,9 +118,7 @@ export default {
   padding: 1rem 2rem;
   border: 1px solid black;
   border-radius: 3px;
-  width: 2rem;
-  display: flex;
-  justify-items: center;
+  display: inline-block;
   margin: 0 auto;
   &:hover {
     background: black;

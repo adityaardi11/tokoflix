@@ -1,6 +1,9 @@
 <template lang='pug'>
 #app
   header
+    router-link(:to='{path : "/"}')
+      img.logo(:src='require("./assets/logo_dark.png")')
+    span.flex-auto
     span {{ $store.getters.getCashDisplay }}
     div.movies-owned-wrapper
       button(@click='display_dropdown_movies_owned = !display_dropdown_movies_owned' :class="display_dropdown_movies_owned ? 'open' : ''").movies-owned-button {{ $store.getters.getMoviesOwnedCount }} film dimiliki
@@ -54,6 +57,9 @@ header {
   align-items: center;
   position: sticky;
   top: 0;
+  img.logo {
+    height: 2.3rem;
+  }
   span {
     display: block;
     box-sizing: border-box;
