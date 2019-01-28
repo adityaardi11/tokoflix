@@ -1,28 +1,41 @@
-<template>
-  <div id="app">
-    <header></header>
-    <main>
-      <router-view></router-view>
-    </main>
-  </div>
+<template lang='pug'>
+#app
+  header
+    span {{ $store.getters.getCashDisplay }}
+    div.movies-owned-wrapper
+      button(@click='display_dropdown_movies_owned = !display_dropdown_movies_owned' :class="display_dropdown_movies_owned ? 'open' : ''").movies-owned-button {{ $store.getters.getMoviesOwnedCount }} film dimiliki
+      div(v-if='display_dropdown_movies_owned').movies-owned
+        div(v-for='m in $store.getters.getMoviesOwned')
+          div {{ m.title }}
+          img(:src='"https://image.tmdb.org/t/p/w200"+m.poster_path')
+  main
+    router-view
 </template>
 
 <script>
 export default {
-  name: "app"
+  name: "app",
+  data() {
+    return {
+      display_dropdown_movies_owned: false
+    };
+  }
 };
 </script>
 
-<style>
+<style lang='scss'>
 body {
   margin: 0;
 }
 
 #app {
-  font-family: "Avenir", Helvetica, Arial, sans-serif;
+  font-family: "Google Sans", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #2c3e50;
+}
+.swal2-container {
+  font-family: "Google Sans", Helvetica, Arial, sans-serif;
 }
 
 main {
@@ -32,20 +45,49 @@ main {
 
 header {
   margin: 0;
-  height: 56px;
+  height: 4rem;
   padding: 0 16px 0 24px;
-  background-color: #35495e;
+  background-color: #4fa149;
   color: #ffffff;
-}
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  position: sticky;
+  top: 0;
+  span {
+    display: block;
+    box-sizing: border-box;
+  }
+  .movies-owned-wrapper {
+    position: relative;
 
-header span {
-  display: block;
-  position: relative;
-  font-size: 20px;
-  line-height: 1;
-  letter-spacing: 0.02em;
-  font-weight: 400;
-  box-sizing: border-box;
-  padding-top: 16px;
+    .movies-owned-button {
+      background: transparent;
+      border: 1px solid white;
+      border-radius: 3px;
+      font-size: 0.8rem;
+      padding: 0.5rem 0.7rem;
+      color: white;
+      display: block;
+      cursor: pointer;
+      margin-left: 1rem;
+      &.open {
+        background: black;
+      }
+    }
+    .movies-owned {
+      display: block;
+      position: absolute;
+      right: 0rem;
+      top: 2.3rem;
+      background-color: #63b85d;
+      color: white;
+      border-radius: 3px;
+      color: black;
+      padding: 1rem;
+      max-height: 24rem;
+      overflow-y: scroll;
+    }
+  }
 }
 </style>

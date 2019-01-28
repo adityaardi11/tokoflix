@@ -8,12 +8,9 @@
           <b>{{ m.title }}</b>
         </router-link>
       </div>
-      <div>vote-count : {{ m.vote_count }}</div>
-      <div>popularity : {{ m.popularity }}</div>
-      <!-- <div>poster : https://image.tmdb.org/t/p/w500{{ m.poster_path }}</div> -->
-      <!-- <div>backdrop : {{ m.backdrop_path }}</div> -->
+      <div>Rating : {{ m.vote_average ? m.vote_average : "-" }}</div>
+      <div>Harga : {{ m.price }}</div>
       <br>
-      <!-- <small>{{ m }}</small> -->
     </div>
   </div>
 </template>
@@ -41,7 +38,13 @@ export default {
         vm.movies = result.data.results;
         vm.movies = vm.movies.map(function(row, key) {
           row.slug = slug(row.title);
-
+          if (row.vote_average < 3) row.price = 3500;
+          else if (row.vote_average >= 3 && row.vote_average < 6)
+            row.price = 8250;
+          else if (row.vote_average >= 6 && row.vote_average < 8)
+            row.price = 16350;
+          else if (row.vote_average >= 8 && row.vote_average < 10)
+            row.price = 21250;
           return row;
         });
       });
