@@ -1,18 +1,12 @@
-<template>
-  <div class="movie-main">
-    <div class="movie-wrapper" v-for="m in movies" :key="m.title">
-      <img :src="'https://image.tmdb.org/t/p/w200' + m.poster_path" alt>
-      <!-- <img :src="'https://image.tmdb.org/t/p/w200' + m.backdrop_path" alt> -->
-      <div class="movie-title">
-        <router-link :to="{name : 'MovieDetail', params : {movie_id : m.id, slug:m.slug}}">
-          <b>{{ m.title }}</b>
-        </router-link>
-      </div>
-      <div>Rating : {{ m.vote_average ? m.vote_average : "-" }}</div>
-      <div>Harga : {{ m.price }}</div>
-      <br>
-    </div>
-  </div>
+<template lang='pug'>
+  .movie-main
+    div.movie-wrapper(v-for="m in movies", :key="m.title")
+      img(:src="'https://image.tmdb.org/t/p/w200' + m.poster_path")
+      .movie-title
+        router-link(:to="{name : 'MovieDetail', params : {movie_id : m.id, slug:m.slug}}")
+          b {{ m.title }}
+      div Rating : {{ m.vote_average ? m.vote_average : "-" }}
+      div Harga : {{ m.price }}
 </template>
 
 <script>
@@ -53,10 +47,21 @@ export default {
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped>
+<style lang='scss' scoped>
 .movie-main {
   text-align: left;
   padding: 1rem;
+  display: grid;
+  grid-template-columns: auto auto;
+  @media (min-width: 400px) {
+    grid-template-columns: auto auto auto;
+  }
+  @media (min-width: 700px) {
+    grid-template-columns: auto auto auto auto;
+  }
+  @media (min-width: 1200px) {
+    grid-template-columns: auto auto auto auto auto;
+  }
 }
 .movie-wrapper {
   padding-bottom: 2rem;
