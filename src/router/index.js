@@ -7,18 +7,13 @@ Vue.use(Router);
 
 export default new Router({
   mode: "history",
-  scrollBehavior(to, from, savedPosition) {
-    if (savedPosition) {
-      return savedPosition;
-    } else {
-      return { x: 0, y: 0 };
-    }
-  },
+  scrollBehavior(to, from, savedPosition) {},
   routes: [
     {
       path: "/",
       name: "Movie",
-      component: Movie
+      component: Movie,
+      props: route => ({ page: route.query.page })
     },
     {
       path: "/:movie_id-:slug",

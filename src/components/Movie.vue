@@ -1,35 +1,64 @@
 <template lang='pug'>
-  .movie-main
-    div.movie-wrapper(v-for="m in movies", :key="m.title")
+.movie-main.pb4
+  .load-previous
+      router-link(:to="{path:'/', query:{page:parseInt(current_page)-1}}", v-if='current_page>1').load-more-button muat lebih banyak
+  .movie-grid
+    div.movie-wrapper(v-for="(m,k) in movies", :key="k")
       img(:src="'https://image.tmdb.org/t/p/w200' + m.poster_path")
       .movie-title
         router-link(:to="{name : 'MovieDetail', params : {movie_id : m.id, slug:m.slug}}")
           b {{ m.title }}
       div Rating : {{ m.vote_average ? m.vote_average : "-" }}
       div Harga : {{ m.price }}
+  .load-more
+      router-link(:to="{path:'/', query:{page:parseInt(current_page)+1}}", v-if='current_page!=total_pages').load-more-button muat lebih banyak
 </template>
 
 <script>
 import axios from "axios";
 import slug from "slug";
+import _ from "lodash";
 
 export default {
+  props: ["page"],
   data() {
     return {
       movies: [],
+      current_page: 1,
+      total_pages: 0,
       results: null
     };
   },
+  watch: {
+    $route(to, from) {
+      this.loadMoviesByPage(to.query.page, to.query.page - from.query.page);
+    }
+  },
   mounted() {
-    let vm = this;
-    axios
-      .get(
-        "https://api.themoviedb.org/3/discover/movie?api_key=c339c6904bbd2182624e925c40f9ee8e&region=ID&page=1&release_date.gte=2018-11-8"
-      )
-      .then(function(result) {
-        console.log(result.data);
-        // vm.results = result.data;
-        vm.movies = result.data.results;
+    if (this.page) this.current_page = this.page;
+    this.loadMoviesByPage(this.current_page);
+  },
+  methods: {
+    loadMoviesByPage(page, state = 1) {
+      let vm = this;
+      this.current_page = page;
+      console.log("loading ...", state);
+      let movies_url =
+        "https://api.themoviedb.org/3/discover/movie?api_key=c339c6904bbd2182624e925c40f9ee8e&region=ID&page=" +
+        this.current_page +
+        "&release_date.gte=2018-11-8";
+
+      axios.get(movies_url).then(function(result) {
+        vm.total_pages = result.data.total_pages;
+
+        if (state != -1) {
+          vm.movies = vm.movies.concat(result.data.results);
+          console.log("next");
+        } else {
+          console.log("prev");
+          vm.movies = result.data.results.concat(vm.movies);
+        }
+
         vm.movies = vm.movies.map(function(row, key) {
           row.slug = slug(row.title);
           if (row.vote_average < 3) row.price = 3500;
@@ -42,13 +71,14 @@ export default {
           return row;
         });
       });
+    }
   }
 };
 </script>
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style lang='scss' scoped>
-.movie-main {
+.movie-grid {
   text-align: left;
   padding: 1rem;
   display: grid;
@@ -66,9 +96,23 @@ export default {
 .movie-wrapper {
   padding-bottom: 2rem;
   display: inline-block;
+  img {
+    min-height: 290px;
+  }
 }
 .movie-title {
   word-wrap: break-word;
   max-width: 150px;
+}
+
+.load-more-button {
+  border: 1px solid black;
+  border-radius: 3px;
+  background-color: transparent;
+  cursor: pointer;
+  &:hover {
+    background-color: black;
+    color: white;
+  }
 }
 </style>
