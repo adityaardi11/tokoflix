@@ -1,8 +1,9 @@
 <template lang='pug'>
 #app
   header
-    router-link(:to='{path : "/"}')
+    router-link(:to='{path : "/"}').logo-wrapper
       img.logo(:src='require("./assets/logo_dark.png")')
+      span.text-logo TokoFlix
     span.flex-auto
     span {{ $store.getters.getCashDisplay }}
     div.movies-owned-wrapper
@@ -57,9 +58,23 @@ header {
   align-items: center;
   position: sticky;
   top: 0;
-  img.logo {
-    height: 2.3rem;
+  .logo-wrapper {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+
+    img.logo {
+      height: 2.3rem;
+    }
+    span {
+      display: block;
+      padding-left: 0.3rem;
+      font-size: 1.63rem;
+      color: white;
+      font-weight: bold;
+    }
   }
+
   span {
     display: block;
     box-sizing: border-box;

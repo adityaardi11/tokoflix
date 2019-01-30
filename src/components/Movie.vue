@@ -18,6 +18,7 @@
 import axios from "axios";
 import slug from "slug";
 import _ from "lodash";
+import moment from "moment";
 
 export default {
   props: ["page"],
@@ -43,10 +44,16 @@ export default {
       let vm = this;
       this.current_page = page;
       console.log("loading ...", state);
+      console.log();
+      let date = moment(new Date())
+        .subtract(1, "month")
+        .format("YYYY-MM-DD");
+
       let movies_url =
-        "https://api.themoviedb.org/3/discover/movie?api_key=c339c6904bbd2182624e925c40f9ee8e&region=ID&page=" +
-        this.current_page +
-        "&release_date.gte=2018-11-8";
+        "https://api.themoviedb.org/3/discover/movie?api_key=c339c6904bbd2182624e925c40f9ee8e&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&region=ID&release_date.gte=" +
+        date +
+        "&page=" +
+        this.current_page;
 
       axios.get(movies_url).then(function(result) {
         vm.total_pages = result.data.total_pages;
