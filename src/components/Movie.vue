@@ -3,13 +3,15 @@
   .load-previous
       router-link(:to="{path:'/', query:{page:parseInt(current_page)-1}}", v-if='current_page>1').load-more-button muat lebih banyak
   .movie-grid
-    div.movie-wrapper(v-for="(m,k) in movies", :key="k")
-      img(:src="'https://image.tmdb.org/t/p/w200' + m.poster_path")
+    div.movie-wrapper(v-for="(m,k) in movies", :key="k").relative
+      router-link(:to="{name : 'MovieDetail', params : {movie_id : m.id, slug:m.slug}}")
+        img(:src="'https://image.tmdb.org/t/p/w200' + m.poster_path")
       .movie-title
         router-link(:to="{name : 'MovieDetail', params : {movie_id : m.id, slug:m.slug}}")
           b {{ m.title }}
       div Rating : {{ m.vote_average ? m.vote_average : "-" }}
-      div Harga : {{ m.price }}
+      div Harga : {{ m.price | getCurrencyFormat}}
+      label(v-if='$store.getters.getOwnedMovieStatus(m.id)').label-owned Sudah dimiliki
   .load-more
       router-link(:to="{path:'/', query:{page:parseInt(current_page)+1}}", v-if='current_page!=total_pages').load-more-button muat lebih banyak
 </template>
@@ -22,6 +24,14 @@ import moment from "moment";
 
 export default {
   props: ["page"],
+  filters: {
+    getCurrencyFormat(value) {
+      return new Intl.NumberFormat("id", {
+        style: "currency",
+        currency: "IDR"
+      }).format(value);
+    }
+  },
   data() {
     return {
       movies: [],
@@ -43,14 +53,12 @@ export default {
     loadMoviesByPage(page, state = 1) {
       let vm = this;
       this.current_page = page;
-      console.log("loading ...", state);
-      console.log();
       let date = moment(new Date())
-        .subtract(1, "month")
+        .subtract(3, "month")
         .format("YYYY-MM-DD");
 
       let movies_url =
-        "https://api.themoviedb.org/3/discover/movie?api_key=c339c6904bbd2182624e925c40f9ee8e&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&region=ID&release_date.gte=" +
+        "https://api.themoviedb.org/3/movie/now_playing?api_key=c339c6904bbd2182624e925c40f9ee8e&language=en-US&sort_by=popularity.desc&include_adult=false&include_video=false&region=ID&release_date.gte=" +
         date +
         "&page=" +
         this.current_page;
@@ -60,9 +68,7 @@ export default {
 
         if (state != -1) {
           vm.movies = vm.movies.concat(result.data.results);
-          console.log("next");
         } else {
-          console.log("prev");
           vm.movies = result.data.results.concat(vm.movies);
         }
 
@@ -105,6 +111,16 @@ export default {
   display: inline-block;
   img {
     min-height: 290px;
+  }
+  label.label-owned {
+    background-color: orange;
+    display: block;
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    color: white;
+    padding: 0.3rem;
+    border-radius: 3px;
   }
 }
 .movie-title {

@@ -2,9 +2,8 @@
   .wrapper
     div(v-if='!movie.title')
       img(src='https://loading.io/spinners/dual-ring/lg.dual-ring-loader.gif')
-    div Judul : {{ movie.title }}
     img(:src='"https://image.tmdb.org/t/p/w200"+movie.poster_path')
-
+    div Judul : {{ movie.title }}
     div Rating : {{ movie.vote_average }}
     div Durasi : {{ movie.runtime }} menit
     div Harga : {{ movie.price }}

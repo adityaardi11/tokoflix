@@ -1,7 +1,7 @@
 <template lang='pug'>
 #app
-  header
-    router-link(:to='{path : "/"}').logo-wrapper
+  header.z-1
+    router-link(:to='{path : "/"}').logo-wrapper.relative.z-1
       img.logo(:src='require("./assets/logo_dark.png")')
       span.text-logo TokoFlix
     span.flex-auto
@@ -11,7 +11,7 @@
       div(v-if='display_dropdown_movies_owned').movies-owned
         div(v-for='m in $store.getters.getMoviesOwned')
           div {{ m.title }}
-          img(:src='"https://image.tmdb.org/t/p/w200"+m.poster_path')
+          img(:src='"https://image.tmdb.org/t/p/w500"+m.poster_path')
   main
     router-view
 </template>
@@ -106,7 +106,8 @@ header {
       border-radius: 3px;
       color: black;
       padding: 1rem;
-      max-height: 24rem;
+      width: 16rem;
+      max-height: 28rem;
       overflow-y: scroll;
     }
   }
