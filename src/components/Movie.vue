@@ -1,7 +1,23 @@
 <template lang='pug'>
-.movie-main.pb4
+.movie-main
   .load-previous
       router-link(:to="{path:'/', query:{page:parseInt(current_page)-1}}", v-if='current_page>1').load-more-button muat lebih banyak
+  .glide.ph2
+    .glide__track(data-glide-el='track')
+      ul.glide__slides
+        li.glide__slide(v-for="(m,k) in movies_highlight", :key="k")
+          div(:style="{'width' : '100%', height:'60vh', 'background-size':'cover', 'background-position':'center top', 'background-image' : 'url(https://image.tmdb.org/t/p/original'+m.poster_path+')'}").br2
+          div.movie-desc
+            .movie-title {{ m.title }}
+    .glide__bullets(data-glide-el='controls[nav]')
+      button.glide__bullet(data-glide-dir='=0')
+      button.glide__bullet(data-glide-dir='=1')
+      button.glide__bullet(data-glide-dir='=2')
+      button.glide__bullet(data-glide-dir='=3')
+      button.glide__bullet(data-glide-dir='=4')
+
+
+
   .movie-grid
     div.movie-wrapper(v-for="(m,k) in movies", :key="k").relative
       router-link(:to="{name : 'MovieDetail', params : {movie_id : m.id, slug:m.slug}}")
@@ -21,6 +37,7 @@ import axios from "axios";
 import slug from "slug";
 import _ from "lodash";
 import moment from "moment";
+import Glide from "@glidejs/glide";
 
 export default {
   props: ["page"],
@@ -35,11 +52,13 @@ export default {
   data() {
     return {
       movies: [],
+      movies_highlight: [],
       current_page: 1,
       total_pages: 0,
       results: null
     };
   },
+
   watch: {
     $route(to, from) {
       this.loadMoviesByPage(to.query.page, to.query.page - from.query.page);
@@ -83,6 +102,10 @@ export default {
             row.price = 21250;
           return row;
         });
+        vm.movies_highlight = _.take(vm.movies, 5);
+        setTimeout(function() {
+          new Glide(".glide").mount();
+        }, 300);
       });
     }
   }
@@ -96,8 +119,8 @@ export default {
   padding: 1rem;
   display: grid;
   grid-template-columns: auto auto;
-  @media (min-width: 400px) {
-    grid-template-columns: auto auto auto;
+  @media (min-width: 400) {
+    grid-template-columns: auto auto;
   }
   @media (min-width: 700px) {
     grid-template-columns: auto auto auto auto;
@@ -109,6 +132,10 @@ export default {
 .movie-wrapper {
   padding-bottom: 2rem;
   display: inline-block;
+  .movie-title {
+    word-wrap: break-word;
+    max-width: 150px;
+  }
   img {
     min-height: 290px;
   }
@@ -123,9 +150,21 @@ export default {
     border-radius: 3px;
   }
 }
-.movie-title {
-  word-wrap: break-word;
-  max-width: 150px;
+
+.glide {
+  .movie-desc {
+    position: absolute;
+    bottom: 1rem;
+    padding-left: 1rem;
+    padding-bottom: 2rem;
+    text-align: left;
+    color: white;
+    .movie-title {
+      font-size: 2.5rem;
+      padding: 0 0.3rem;
+      background-color: transparentize($color: #000000, $amount: 0.3);
+    }
+  }
 }
 
 .load-more-button {

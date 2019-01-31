@@ -7,7 +7,8 @@
     span.flex-auto
     span {{ $store.getters.getCashDisplay }}
     div.movies-owned-wrapper
-      button(@click='display_dropdown_movies_owned = !display_dropdown_movies_owned' :class="display_dropdown_movies_owned ? 'open' : ''").movies-owned-button {{ $store.getters.getMoviesOwnedCount }} film dimiliki
+      div(v-if='$store.getters.getMoviesOwned.length == 0').pv2.ph3.ml2.f6.o-30 0 film dimiliki
+      button(v-else, @click='display_dropdown_movies_owned = !display_dropdown_movies_owned' :class="display_dropdown_movies_owned ? 'open' : ''").movies-owned-button {{ $store.getters.getMoviesOwnedCount }} film dimiliki
       div(v-if='display_dropdown_movies_owned').movies-owned
         div(v-for='m in $store.getters.getMoviesOwned')
           div {{ m.title }}
@@ -44,7 +45,6 @@ body {
 
 main {
   text-align: center;
-  margin-top: 40px;
 }
 
 header {
