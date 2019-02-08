@@ -1,7 +1,7 @@
 <template lang='pug'>
 #app
-  header.z-1
-    router-link(:to='{path : "/"}').logo-wrapper.relative.z-1
+  header.z-2
+    router-link(:to='{path : "/"}').logo-wrapper.relative
       img.logo(:src='require("./assets/logo_dark.png")')
       span.text-logo TokoFlix
     span.flex-auto
