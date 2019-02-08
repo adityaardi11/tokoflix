@@ -1,12 +1,16 @@
 <template lang="pug">
   .wrapper
-    div(v-if='!movie.title')
-      img(src='https://loading.io/spinners/dual-ring/lg.dual-ring-loader.gif')
-    img(:src='"https://image.tmdb.org/t/p/w200"+movie.poster_path')
-    div Judul : {{ movie.title }}
-    div Rating : {{ movie.vote_average }}
-    div Durasi : {{ movie.runtime }} menit
-    div Harga : {{ movie.price }}
+    .movie-general.flex.tl.relative
+      .absolute(:style="{'background-image' : 'url(https://image.tmdb.org/t/p/original'+movie.poster_path+')'}").h-100.w-100
+      .dib.pl2.pt2.z-1
+        div(v-if='!movie.title')
+          img(src='https://loading.io/spinners/dual-ring/lg.dual-ring-loader.gif')
+        img(:src='"https://image.tmdb.org/t/p/w200"+movie.poster_path')
+      .dib.pl2.pt2.h-100.z-1
+        div.movie-title.f2.b {{ movie.title }}
+        div Rating : {{ movie.vote_average }}
+        div Durasi : {{ movie.runtime }} menit
+        div Harga : {{ movie.price }}
     hr
     div(v-if='$store.getters.getOwnedMovieStatus(movie.id)') Sudah dimiliki
     div(v-else)
